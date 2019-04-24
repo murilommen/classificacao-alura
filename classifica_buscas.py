@@ -1,4 +1,4 @@
-from collections import Counter
+#from collections import Counter
 import pandas as pd
 
 df = pd.read_csv('busca.csv')
@@ -12,6 +12,7 @@ Ydummies_df = Y_df
 X = Xdummies_df.values
 Y = Ydummies_df.values
 
+'''
 porcentagem_de_treino = 0.8
 porcentagem_de_teste = 0.1
 
@@ -31,14 +32,18 @@ teste_marcacoes = Y[tamanho_de_treino:fim_de_teste]
 # 900 até 999
 validacao_dados = X[fim_de_teste:]
 validacao_marcacoes = Y[fim_de_teste:]
+'''
 
-def fit_and_predict(nome, modelo, treino_dados, treino_marcacoes, teste_dados, teste_marcacoes):
-	modelo.fit(treino_dados, treino_marcacoes)
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X,Y,test_size=0.15,random_state=None)
 
-	resultado = modelo.predict(teste_dados)
-	acertos = (resultado == teste_marcacoes)
+def fit_and_predict(nome, modelo, X_train, Y_train, X_test, Y_test):
+	modelo.fit(X_train, Y_train)
+
+	resultado = modelo.predict(X_test)
+	acertos = (resultado == Y_test)
 	total_de_acertos = sum(acertos)
-	total_de_elementos = len(teste_dados)
+	total_de_elementos = len(X_test)
 
 	taxa_de_acerto = 100.0 * total_de_acertos / total_de_elementos
 
@@ -50,17 +55,21 @@ def fit_and_predict(nome, modelo, treino_dados, treino_marcacoes, teste_dados, t
 
 from sklearn.naive_bayes import MultinomialNB
 modeloMultinomial = MultinomialNB()
-resultadoMultinomial = fit_and_predict("MultinomialNB", modeloMultinomial, treino_dados, treino_marcacoes, teste_dados, teste_marcacoes)
+# resultadoMultinomial = fit_and_predict("MultinomialNB", modeloMultinomial, treino_dados, treino_marcacoes, teste_dados, teste_marcacoes)
+resultadoMultinomial = fit_and_predict("MultinomialNB", modeloMultinomial, X_train, X_test, Y_train, Y_test)
 
 from sklearn.ensemble import AdaBoostClassifier
 modeloAdaBoost = AdaBoostClassifier()
-resultadoAdaBoost = fit_and_predict("AdaBoostClassifier", modeloAdaBoost, treino_dados, treino_marcacoes, teste_dados, teste_marcacoes)
+resultadoAdaBoost = fit_and_predict("AdaBoostClassifier", modeloAdaBoost, X_train, X_test, Y_train, Y_test)
 
 if resultadoMultinomial > resultadoAdaBoost:
     vencedor = modeloMultinomial
 else:
     vencedor = modeloAdaBoost
 
+print(vencedor)
+
+'''
 resultado = vencedor.predict(validacao_dados)
 acertos = (resultado == validacao_marcacoes)
 total_de_acertos = sum(acertos)
@@ -77,3 +86,4 @@ print("Taxa de acerto base: %f" % taxa_de_acerto_base)
 
 total_de_elementos = len(validacao_dados)
 print("Total de teste: %d" % total_de_elementos)
+'''
