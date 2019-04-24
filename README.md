@@ -1,2 +1,4 @@
-# data-science
-Personal projects to learn Data Science. Most of them are currently from www.alura.com.br classes, with minor changes to test out.
+# classificação
+Personal project from an online course in Alura "Introduction to classification in Machine Learning". 
+
+Made some changes to use another method to split the train and test variables, using train_test_split
